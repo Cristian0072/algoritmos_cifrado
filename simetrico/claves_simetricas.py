@@ -21,7 +21,7 @@ def generar_clave():
     # Genera una clave AES de 256 bits y la protege con DPAPI
     clave = get_random_bytes(32)
     # objeto es la clave protegida con DPAPI
-    _, objeto = win32crypt.CryptProtectData(clave, None, None, None, None, 0)
+    objeto = win32crypt.CryptProtectData(clave, None, None, None, None, 0)
     with open(clave_file, "wb") as f:
         f.write(objeto)
 
