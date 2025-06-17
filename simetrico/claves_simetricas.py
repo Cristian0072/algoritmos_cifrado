@@ -11,54 +11,30 @@ Almacenamiento seguro de claves, carga de claves, serialización/deserializació
 
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
-import win32crypt  # Importar librería para almacenamiento seguro de claves en Windows
-
+import win32crypt  # librería para manejar claves en Windows con servicios de protección de datos (DPAPI)
 
 clave_file = "clave_aes.key"
 
 
 # generacion de clave AES y almacenamiento seguro
 def generar_clave():
-    # Genera una clave de 32 bytes (256 bits)
+    # Genera una clave AES de 256 bits y la protege con DPAPI
     clave = get_random_bytes(32)
-
-    # proteger la clave usando win32crypt (en Windows)
-    if win32crypt:
-        clave_protegida = win32crypt.CryptProtectData(
-            clave,  # Datos a proteger
-            None,
-            None,
-            None,
-            None,
-            0,
-        )
-        clave = clave_protegida
-
-    # guardar la clave en un archivo de almacenamiento seguro
+    # objeto es la clave protegida con DPAPI
+    _, objeto = win32crypt.CryptProtectData(clave, None, None, None, None, 0)
     with open(clave_file, "wb") as f:
-        f.write(clave)
+        f.write(objeto)
 
-    print(f"Clave generada y guardada: {clave.hex()}\n")
+    print("Clave AES generada y guardada de forma segura (DPAPI)")
     return clave
 
 
 # cargar la clave desde el archivo de almacenamiento seguro
 def cargar_clave():
-
     with open(clave_file, "rb") as f:
-        clave = f.read()
-
-    # Desproteger la clave usando win32crypt (en Windows)
-    if win32crypt:
-        _, clave = win32crypt.CryptUnprotectData(
-            clave,  # Datos a desproteger
-            None,
-            None,
-            None,
-            0,
-        )
-    print(f"Clave cargada: {clave.hex()}\n")
-
+        objeto = f.read()
+    _, clave = win32crypt.CryptUnprotectData(objeto, None, None, None, 0)
+    print("Clave AES cargada desde el almacenamiento seguro (DPAPI)")
     return clave
 
 
@@ -80,28 +56,28 @@ def descifrar_mensaje(cifrado, etiqueta, iv, clave):
 
 
 if __name__ == "__main__":
-    # Generar y guardar la clave
+    # generar y guardar la clave
     clave = generar_clave()
 
-    # Cargar la clave desde el archivo
+    # cargar la clave desde el archivo
     clave_cargada = cargar_clave()
 
-    # Verificar que la clave cargada es la misma que la generada
+    # verificar que la clave cargada es la misma que la generada
     if clave == clave_cargada:
         "La clave cargada no coincide con la generada"
     else:
         print("La clave cargada coincide con la generada")
 
-    # Mensaje a cifrar
+    # mensaje a cifrar
     mensaje = b"Hola mundo"
 
-    # Cifrar el mensaje
+    # cifrar el mensaje
     cifrado, etiqueta, iv = cifrar_mensaje(mensaje, clave_cargada)
 
-    # Descifrar el mensaje
+    # descifrar el mensaje
     mensaje_descifrado = descifrar_mensaje(cifrado, etiqueta, iv, clave_cargada)
 
-    # Verificación final
+    # verificación final
     if mensaje_descifrado == mensaje:
         print("\nEl mensaje descifrado coincide con el original")
     else:
