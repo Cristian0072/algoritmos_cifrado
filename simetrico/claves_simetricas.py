@@ -34,7 +34,9 @@ def cargar_clave():
     with open(clave_file, "rb") as f:
         objeto = f.read()
     _, clave = win32crypt.CryptUnprotectData(objeto, None, None, None, 0)
+
     print("Clave AES cargada desde el almacenamiento seguro (DPAPI)")
+
     return clave
 
 

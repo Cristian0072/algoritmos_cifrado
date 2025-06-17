@@ -43,7 +43,7 @@ def firmar_mensaje(c_pivada, mensaje, algoritmo_hash):
     return firma, hash_mensaje, t
 
 
-def verificar_firma(c_publica, mensaje, firma, hash_mensaje):
+def verificar_firma(c_publica, firma, hash_mensaje):
 
     try:
         # Verificar la firma con la clave pública
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         print(f"Tamaño del hash ({algoritmo}): {len(hash_mensaje.digest())} bytes")
         print(f"Tiempo de firma ({algoritmo}): {t:.6} segundos")
         # Verificar la firma con el mensaje original
-        resultado = verificar_firma(c_publica, m_original, firma, hash_mensaje)
+        resultado = verificar_firma(c_publica, firma, hash_mensaje)
         print(f"Mensaje original: {m_original.decode()}")
         print(f"Resultado: {resultado}")
         print("-" * 40)

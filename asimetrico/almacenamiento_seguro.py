@@ -8,12 +8,11 @@ Protección de clave privada, cifrado de clave privada en reposo.
 """
 
 from Crypto.PublicKey import RSA
-from Crypto.Random import get_random_bytes
 from getpass import getpass  # librería para solicitar contraseñas de forma segura
 
 
 def generar_claves():
-    c_privada = RSA.generate(2048)
+    c_privada = RSA.generate(2048)  # clave de 2048 bits
     c_publica = c_privada.publickey()
     guardar_claves(c_privada, c_publica, "clave_privada.pem", "clave_publica.pem")
     return c_privada, c_publica

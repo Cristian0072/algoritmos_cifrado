@@ -24,25 +24,25 @@ def generar_clave_chacha20():
 def cifrar_aes(clave, archivo):
     cipher = AES.new(clave, AES.MODE_GCM)
     iv = cipher.nonce
-    archivo_descifrado, etiqueta = cipher.encrypt_and_digest(archivo)
-    return iv, archivo_descifrado, etiqueta
+    archivo_cifrado, etiqueta = cipher.encrypt_and_digest(archivo)
+    return iv, archivo_cifrado, etiqueta
 
 
-def descifrar_aes(clave, iv, archivo_descifrado, etiqueta):
+def descifrar_aes(clave, iv, archivo_cifrado, etiqueta):
     cipher = AES.new(clave, AES.MODE_GCM, nonce=iv)
-    datos_descifrados = cipher.decrypt_and_verify(archivo_descifrado, etiqueta)
+    datos_descifrados = cipher.decrypt_and_verify(archivo_cifrado, etiqueta)
     return datos_descifrados
 
 
 def cifrar_chacha20(clave, archivo):
     cipher = ChaCha20.new(key=clave)
-    archivo_descifrado = cipher.encrypt(archivo)
-    return cipher.nonce, archivo_descifrado
+    archivo_cifrado = cipher.encrypt(archivo)
+    return cipher.nonce, archivo_cifrado
 
 
-def descifrar_chacha20(clave, iv, archivo_descifrado):
+def descifrar_chacha20(clave, iv, archivo_cifrado):
     cipher = ChaCha20.new(key=clave, nonce=iv)
-    datos_descifrados = cipher.decrypt(archivo_descifrado)
+    datos_descifrados = cipher.decrypt(archivo_cifrado)
     return datos_descifrados
 
 
